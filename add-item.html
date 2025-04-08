@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Add Item – MythID</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    body {
+      background: #f6f1e7;
+      font-family: Georgia, serif;
+      color: #2c1e14;
+      padding: 2em;
+    }
+    main {
+      max-width: 640px;
+      margin: auto;
+      background: #fff9f1;
+      padding: 2em;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.05);
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 1em;
+      font-size: 2rem;
+    }
+    label {
+      display: block;
+      margin-top: 1em;
+      font-weight: bold;
+    }
+    input, textarea {
+      width: 100%;
+      padding: 0.7em;
+      border: 1px solid #c5b9a6;
+      border-radius: 4px;
+      margin-top: 0.5em;
+      font-size: 1rem;
+    }
+    button {
+      margin-top: 2em;
+      background: #2c1e14;
+      color: #f6f1e7;
+      padding: 0.8em 1.6em;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      width: 100%;
+    }
+    button:hover {
+      background: #442d1a;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Add New Item</h1>
+    <form id="add-item-form">
+      <label for="name">Item Name</label>
+      <input type="text" id="name" name="name" placeholder="e.g. Dustweave Cloak" required />
+
+      <label for="material">Material</label>
+      <input type="text" id="material" name="material" placeholder="e.g. Denim, Cotton, Leather" />
+
+      <label for="origin">Origin / Story</label>
+      <textarea id="origin" name="origin" placeholder="Where did this item come from? What does it mean to you?" rows="5"></textarea>
+
+      <label for="tags">Lore Tags (comma-separated)</label>
+      <input type="text" id="tags" name="tags" placeholder="e.g. Nightborn, Reclaimed, Festival 2022" />
+
+      <button type="submit">Save Item to Wardrobe</button>
+    </form>
+  </main>
+
+  <!-- Supabase -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+  <script>
+    const SUPABASE_URL = 'https://YOUR_PROJECT_ID.supabase.co'; // <- Replace this
+    const SUPABASE_KEY = 'YOUR_ANON_KEY'; // <- Replace this
+
+    const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    const form = document.getElementById('add-item-form');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const name = document.getElementById('name').value;
+      const material = document.getElementById('material').value;
+      const origin = document.getElementById('origin').value;
+      const tags = document.getElementById('tags').value;
+
+      const { data, error } = await supabase
+        .from('items')
+        .insert([{ name, material, origin, tags }]);
+
+      if (error) {
+        alert('Error saving item: ' + error.message);
+        console.error(error);
+      } else {
+        alert('Item saved to Wardrobe!');
+        form.reset();
+      }
+    });
+  </script>
+</body>
+</html>
